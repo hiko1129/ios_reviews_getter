@@ -41,25 +41,10 @@ def fetch_review(review, key_1, key_2)
 end
 
 # レビュー全体（レスポンス）を保存する
-def save_reviews(result)
-  file_path = './reviews.json'
-  open(file_path, 'w') do |io|
-    io.write(result)
-    puts 'saved'
-  end
-end
-
-# レビューを取得するアプリケーションのID
-ios_app_id = 281_796_108
-
-review_data = send_request(ios_app_id)
-if review_data.nil?
-  puts 'review data is nil'
-else
-  review_data.each do |h|
-    puts "rate:#{h[:rate]}"
-    puts "title:#{h[:title]}"
-    puts "content:#{h[:content]}"
-    puts
-  end
-end
+# def save_reviews(result)
+#   file_path = './reviews.json'
+#   open(file_path, 'w') do |io|
+#     io.write(result)
+#     puts 'saved'
+#   end
+# end
