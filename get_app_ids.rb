@@ -1,21 +1,19 @@
 $LOAD_PATH << '.'
+require 'request_reviews'
 require 'uri'
 require 'open-uri'
-require 'pp'
 require 'json'
-require 'request_reviews'
-
 
 # パラメータ付きのリクエストURLを生成
 def create_request_url(url, params_hash)
- temp_array = []
- params_hash.each do |k, v|
-   temp_array << "#{k}=#{v}" unless v.nil?
- end
- params = temp_array.join('&')
+  temp_array = []
+  params_hash.each do |k, v|
+    temp_array << "#{k}=#{v}" unless v.nil?
+  end
+  params = temp_array.join('&')
 
- request_url = "#{url}?#{params}"
- request_url
+  request_url = "#{url}?#{params}"
+  request_url
 end
 
 # apiにリクエストを送信して、レスポンスとしてjsonを受け取る
@@ -37,43 +35,19 @@ end
 def get_app_ids(term)
   base_url = 'https://itunes.apple.com/search'
   params = {
-    term: URI.encode(term),
-    country: 'jp',
-    media: 'software',
-    entity: 'software',
-    attribute: nil,
-    callback: nil,
-    limit: 1,
-    offset: nil,
-    lang: 'ja_jp'
+    term: URI.encode(term), country: 'jp', media: 'software',
+    entity: 'software', attribute: nil, callback: nil,
+    limit: 1, offset: nil, lang: 'ja_jp'
   }
   return_response(create_request_url(base_url, params))
 end
 
 # アプリケーションのランキングを取得する
-def get_top_free_apps()
+def acquire_top_free_apps
   base_url = 'https://itunes.apple.com/jp/rss'
   feed_type = '/topfreeapplications'
   size = '/limit=200'
   file_type = '/json'
   rss_feed_url = base_url + feed_type + size + file_type
   return_response(rss_feed_url)
-end
-
-# IDに対応したアプリケーションのレビューを取得する
-get_top_free_apps()['feed']['entry'].each do |data|
-  get_app_ids(data['im:name']['label'])['results'].each do |result|
-    puts result['trackName']
-    review_data = send_request(result['trackId'])
-    if review_data.nil?
-      puts 'review data is nil'
-    else
-      review_data.each do |h|
-        puts "rate:#{h[:rate]}"
-        puts "title:#{h[:title]}"
-        puts "content:#{h[:content]}"
-        puts
-      end
-    end
-  end
 end

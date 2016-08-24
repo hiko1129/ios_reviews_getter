@@ -1,6 +1,5 @@
 require 'open-uri'
 require 'json'
-require 'pp'
 
 # リクエストを送信する
 def send_request(ios_app_id)
@@ -14,7 +13,7 @@ def confirm_response(response)
   code, message = response.status
   if code.to_i == 200
     result = response.read
-    save_reviews(result)
+    # save_reviews(result)
     extract_review(result)
   else
     puts "#{code} #{message}"
